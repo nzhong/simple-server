@@ -19,6 +19,12 @@
             <artifactId>undertow-servlet</artifactId>
             <version>1.3.5.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-undertow</artifactId>
+            <version>3.0.13.Final</version>
+        </dependency>
     </dependencies>
 
     <build>

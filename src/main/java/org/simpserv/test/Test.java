@@ -10,6 +10,8 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.util.Headers;
+import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.simpserv.servlets.EchoServlet;
 import org.simpserv.servlets.HelloServlet;
 
@@ -24,6 +26,7 @@ public class Test {
                 .addPrefixPath( "/static", createStaticResourceHandler() )
                 .addPrefixPath( "/api",    new InternalRestHandler() )
                 .addPrefixPath( "/serv",   createServletHandler() )
+                .addPrefixPath( "/rest",   createRestApiHandler() )
             ).build();
         server.start();
     }
@@ -53,6 +56,21 @@ public class Test {
                     Servlets.servlet("helloServlet", HelloServlet.class).addMapping("/hello"),
                     Servlets.servlet("echoServlet", EchoServlet.class).addMapping("/echo")
                 );
+        DeploymentManager manager = Servlets.defaultContainer().addDeployment(di);
+        manager.deploy();
+        HttpHandler servletHandler = manager.start();
+        return servletHandler;
+    }
+
+    private static HttpHandler createRestApiHandler() throws Exception {
+        final UndertowJaxrsServer server = new UndertowJaxrsServer();
+
+        ResteasyDeployment deployment = new ResteasyDeployment();
+        deployment.setApplicationClass( MyApp.class.getName() );
+        DeploymentInfo di = server.undertowDeployment(deployment, "/api")
+            .setClassLoader(Test.class.getClassLoader())
+            .setContextPath("/rest")
+            .setDeploymentName("My API");
         DeploymentManager manager = Servlets.defaultContainer().addDeployment(di);
         manager.deploy();
         HttpHandler servletHandler = manager.start();
