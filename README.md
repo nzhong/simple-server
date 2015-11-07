@@ -20,6 +20,7 @@ How to run?
 ---------------------------------------------------------
 * ```mvn clean package```
 * ```mvn exec:java```
+* or ```java -jar target/simple-server-1.0-SNAPSHOT-jar-with-dependencies.jar```
 * Point browser to:
 * http://localhost:6060/api   should return api
 * http://localhost:6060/static  should return static html/css/js
